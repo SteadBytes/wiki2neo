@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 click = "*"
+"wiki2neo" = {editable = true, path = "."}
 
 [dev-packages]
 

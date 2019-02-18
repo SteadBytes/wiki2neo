@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "09d3b72db87cd42a45d1d822d726c2a7c7682c8e1e405969f17ceda050b841fe"
+            "sha256": "26cda9f2329b065fd79accacc7bbed21a8ef46e066afc9a6f1c432bed6169ef3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -23,6 +23,10 @@
             ],
             "index": "pypi",
             "version": "==7.0"
+        },
+        "wiki2neo": {
+            "editable": true,
+            "path": "."
         }
     },
     "develop": {}
