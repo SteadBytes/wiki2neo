@@ -8,6 +8,7 @@ click = "*"
 "wiki2neo" = {editable = true, path = "."}
 
 [dev-packages]
+twine = "*"
 
 [requires]
 python_version = "3.6"
