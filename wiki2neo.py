@@ -83,31 +83,47 @@ def parse_pages(wiki_xml_f, pages_f, links_f):
 @click.command()
 @click.argument("wiki-xml-infile", required=False, default=sys.stdin, type=click.File())
 @click.option(
-    "-p", "--pages-outfile", default=PAGES_CSV_FILENAME, type=click.File(mode="w")
+    "-p",
+    "--pages-outfile",
+    default=PAGES_CSV_FILENAME,
+    type=click.File(mode="w"),
+    help="Node (Pages) CSV output file",
 )
 @click.option(
-    "-l", "--links-outfile", default=LINKS_CSV_FILENAME, type=click.File(mode="w")
+    "-l",
+    "--links-outfile",
+    default=LINKS_CSV_FILENAME,
+    type=click.File(mode="w"),
+    help="Relationshiphs (Links) CSV output file",
 )
 def main(wiki_xml_infile, pages_outfile, links_outfile):
     """
-    Parse Wikipedia XML dump into two Neo4j import CSV files:
-        - `pages_outfile`: Node (Page) import ["title:ID", "wiki_page_id"]
-        - `links_outfile`: Relationships (Links) import [":START_ID", ":END_ID"]
+    Parse Wikipedia pages-articles-multistream.xml dump into two Neo4j import CSV files:
+
+        Node (Page) import, headers=["title:ID", "wiki_page_id"]
+        Relationships (Links) import, headers=[":START_ID", ":END_ID"]
+
+    Reads from stdin by default, pass [WIKI_XML_INFILE] to read from file.
     """
     start = time.time()
-    page_count, link_count = parse_pages(
-        wiki_xml_infile, pages_outfile, links_outfile
-    )
+    page_count, link_count = parse_pages(wiki_xml_infile, pages_outfile, links_outfile)
     end = time.time()
-    print(f"Processed {page_count} pages to {pages_outfile.name}")
-    print(f"Extracted {link_count} links to {links_outfile.name}")
-    print(f"Total Time: {timedelta(seconds=end - start)}")
-    print(f"Import CSVs into Neo4j:")
-    print(
+    click.secho(f"Processing complete", fg="green")
+    click.echo(f"Time: {timedelta(seconds=end - start)}")
+    click.echo(
+        f"Pages: {click.style(str(page_count), fg='red')} -> {pages_outfile.name}"
+    )
+    click.echo(
+        f"Links: {click.style(str(link_count), fg='red')} -> {links_outfile.name}"
+    )
+    click.echo(f"Import CSVs into Neo4j:")
+    click.secho(
         (
-            f"\t$ neo4j-admin import --nodes:Page {pages_outfile.name}"
-            f" --relationships:LINKS_TO {links_outfile.name}"
-        )
+            f"neo4j-admin import --nodes:Page {pages_outfile.name} \\ \n"
+            f"\t--relationships:LINKS_TO {links_outfile.name} \\ \n"
+            "\t--ignore-duplicate-nodes --ignore-missing-nodes --multiline-fields"
+        ),
+        fg="blue",
     )
 
 
