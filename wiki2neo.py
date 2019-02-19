@@ -88,13 +88,15 @@ def parse_pages(wiki_xml_f, pages_f, links_f):
     default=PAGES_CSV_FILENAME,
     type=click.File(mode="w"),
     help="Node (Pages) CSV output file",
+    show_default=True,
 )
 @click.option(
     "-l",
     "--links-outfile",
     default=LINKS_CSV_FILENAME,
     type=click.File(mode="w"),
-    help="Relationshiphs (Links) CSV output file",
+    help="Relationships (Links) CSV output file",
+    show_default=True,
 )
 def main(wiki_xml_infile, pages_outfile, links_outfile):
     """
