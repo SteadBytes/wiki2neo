@@ -15,7 +15,12 @@ Usage: wiki2neo [OPTIONS] [WIKI_XML_INFILE]
   Reads from stdin by default, pass [WIKI_XML_INFILE] to read from file.
 
 Options:
-  -p, --pages-outfile FILENAME  Node (Pages) CSV output file
-  -l, --links-outfile FILENAME  Relationshiphs (Links) CSV output file
+  -p, --pages-outfile FILENAME  Node (Pages) CSV output file  [default:pages.csv]
+  -l, --links-outfile FILENAME  Relationships (Links) CSV output file [default: links.csv]
   --help                        Show this message and exit.
+
+Import resulting CSVs into Neo4j:
+$ neo4j-admin import --nodes:Page pages.csv \ 
+        --relationships:LINKS_TO links.csv \ 
+        --ignore-duplicate-nodes --ignore-missing-nodes --multiline-fields
 ```
