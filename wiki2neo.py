@@ -32,12 +32,12 @@ def parse_links(text):
 def parse_pages(wiki_xml_f, pages_f, links_f):
     """
     Parse Wikipedia XML dump into two files:
-        - `pages_fp`: Neo4j Node import CSV ["title:ID", "wiki_page_id"]
+        - `pages_fp`: Neo4j Node import CSV ["title:ID", "id"]
         - `links_fp`: Intermediary CSV of links [":START_ID", "END_TITLE"]
     """
     pages_writer = csv.writer(pages_f)
     links_writer = csv.writer(links_f)
-    pages_writer.writerow(["title:ID", "wiki_page_id"])
+    pages_writer.writerow(["title:ID", "id"])
     links_writer.writerow([":START_ID", ":END_ID"])
 
     page_count = link_count = 0
@@ -102,7 +102,7 @@ def main(wiki_xml_infile, pages_outfile, links_outfile):
     """
     Parse Wikipedia pages-articles-multistream.xml dump into two Neo4j import CSV files:
 
-        Node (Page) import, headers=["title:ID", "wiki_page_id"]
+        Node (Page) import, headers=["title:ID", "id"]
         Relationships (Links) import, headers=[":START_ID", ":END_ID"]
 
     Reads from stdin by default, pass [WIKI_XML_INFILE] to read from file.

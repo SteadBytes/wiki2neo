@@ -19,7 +19,7 @@ Usage: wiki2neo [OPTIONS] [WIKI_XML_INFILE]
   Parse Wikipedia pages-articles-multistream.xml dump into two Neo4j import
   CSV files:
 
-      Node (Page) import, headers=["title:ID", "wiki_page_id"]
+      Node (Page) import, headers=["title:ID", "id"]
       Relationships (Links) import, headers=[":START_ID", ":END_ID"]
 
   Reads from stdin by default, pass [WIKI_XML_INFILE] to read from file.
@@ -33,4 +33,9 @@ Import resulting CSVs into Neo4j:
 $ neo4j-admin import --nodes:Page pages.csv \
         --relationships:LINKS_TO links.csv \
         --ignore-duplicate-nodes --ignore-missing-nodes --multiline-fields
+```
+
+Downloads from Wikipedia are in compressed `xml.bz2` format. Simplest usage is to pip extraction output straight into `wiki2neo`:
+```bash
+$ bzcat pages-articles-multistream.xml.dz2 | wiki2neo
 ```
