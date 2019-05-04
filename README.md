@@ -16,7 +16,7 @@ $ pip install wiki2neo
 ```
 Usage: wiki2neo [OPTIONS] [WIKI_XML_INFILE]
 
-  Parse Wikipedia pages-articles-multistream.xml dump into two Neo4j import
+  Parse Wikipedia pages-articles-multistream.xml[.bz2] dump into two Neo4j import
   CSV files:
 
       Node (Page) import, headers=["title:ID", "id"]
@@ -35,7 +35,13 @@ $ neo4j-admin import --nodes:Page pages.csv \
         --ignore-duplicate-nodes --ignore-missing-nodes --multiline-fields
 ```
 
-Downloads from Wikipedia are in compressed `xml.bz2` format. Simplest usage is to pip extraction output straight into `wiki2neo`:
+Downloads from Wikipedia are in compressed `xml.bz2` format. `wiki2neo` supports
+parsing either the compressed `bz2` file directly or an uncompressed `xml` file:
+
 ```bash
-$ bzcat pages-articles-multistream.xml.dz2 | wiki2neo
+# compressed
+$ wiki2neo pages-articles-multistream.xml.bz2
+
+# uncompressed
+$ wiki2neo pages-articles-multistream.xml
 ```

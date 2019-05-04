@@ -1,8 +1,10 @@
+import bz2
 import csv
 import re
 import sys
 import time
 from datetime import timedelta
+from functools import partial
 from xml.etree import ElementTree
 
 import click
@@ -80,8 +82,20 @@ def parse_pages(wiki_xml_f, pages_f, links_f):
     return page_count, link_count
 
 
+def is_bz2(filename):
+    try:
+        with bz2.BZ2File(filename, "r") as f:
+            f.read(1)
+            return True
+    except OSError:
+        pass
+    return False
+
+
 @click.command()
-@click.argument("wiki-xml-infile", required=False, default=sys.stdin, type=click.File())
+@click.argument(
+    "wiki-xml-infile", required=False, default=sys.stdin, type=click.Path(exists=True)
+)
 @click.option(
     "-p",
     "--pages-outfile",
@@ -100,16 +114,21 @@ def parse_pages(wiki_xml_f, pages_f, links_f):
 )
 def main(wiki_xml_infile, pages_outfile, links_outfile):
     """
-    Parse Wikipedia pages-articles-multistream.xml dump into two Neo4j import CSV files:
+    Parse Wikipedia pages-articles-multistream.xml[.bz2] dump into two Neo4j import CSV files:
 
         Node (Page) import, headers=["title:ID", "id"]
         Relationships (Links) import, headers=[":START_ID", ":END_ID"]
 
     Reads from stdin by default, pass [WIKI_XML_INFILE] to read from file.
     """
+
+    _open = partial(bz2.open, mode="rt") if is_bz2(wiki_xml_infile) else open
+
     start = time.time()
-    page_count, link_count = parse_pages(wiki_xml_infile, pages_outfile, links_outfile)
+    with _open(wiki_xml_infile) as f:
+        page_count, link_count = parse_pages(f, pages_outfile, links_outfile)
     end = time.time()
+
     click.secho(f"Processing complete", fg="green")
     click.echo(f"Time: {timedelta(seconds=end - start)}")
     click.echo(
